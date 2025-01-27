@@ -1,6 +1,7 @@
 import math
 import requests
 import argparse
+import time
 
 #Write you own function that moves the drone from one place to another 
 #the function returns the drone's current location while moving
@@ -11,6 +12,16 @@ def your_function():
     return (longitude, latitude)
 #====================================================================================================
 
+def travel(xf, yf, xt, yt):
+    for i in range(1, 110):
+        x = xf + (xt-xf)/109 * i
+        y = yf + (yt-yf)/109 * i
+        with requests.Session() as session:
+            drone_location = {'longitude': x,
+                              'latitude': y
+                        }
+            resp = session.post(SERVER_URL, json=drone_location)
+        time.sleep(0.1)
 
 def run(current_coords, from_coords, to_coords, SERVER_URL):
     # Complete the while loop:
@@ -18,13 +29,8 @@ def run(current_coords, from_coords, to_coords, SERVER_URL):
     # 2. Plan a path with your own function, so that the drone moves from [current_address] to [from_address], and the from [from_address] to [to_address]. 
     # 3. While moving, the drone keeps sending it's location to the database.
     #====================================================================================================
-    while True:
-        drone_coords = your_function()
-        with requests.Session() as session:
-            drone_location = {'longitude': drone_coords[0],
-                              'latitude': drone_coords[1]
-                        }
-            resp = session.post(SERVER_URL, json=drone_location)
+    travel(current_coords[0], current_coords[1], from_coords[0], from_coords[1])
+    travel(from_coords[0], from_coords[1], to_coords[0], to_coords[1])
   #====================================================================================================
 
    
