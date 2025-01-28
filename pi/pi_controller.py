@@ -13,15 +13,20 @@ def your_function():
 #====================================================================================================
 
 def travel(xf, yf, xt, yt):
-    for i in range(1, 110):
-        x = xf + (xt-xf)/109 * i
-        y = yf + (yt-yf)/109 * i
+    sleepingTime = 0.1
+    travelspeed = 0.005 * sleepingTime
+    distance = math.sqrt((xt-xf)**2 + (yt-yf)**2)
+    rangeNumber = int(distance / travelspeed)
+    print(distance)
+    for i in range(1, rangeNumber + 1):
+        x = xf + (xt-xf)/rangeNumber * i
+        y = yf + (yt-yf)/rangeNumber * i
         with requests.Session() as session:
             drone_location = {'longitude': x,
                               'latitude': y
                         }
             resp = session.post(SERVER_URL, json=drone_location)
-        time.sleep(0.1)
+        time.sleep(sleepingTime)
 
 def run(current_coords, from_coords, to_coords, SERVER_URL):
     # Complete the while loop:
